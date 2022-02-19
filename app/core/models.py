@@ -1,6 +1,18 @@
+import uuid
+import os
+
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, \
     BaseUserManager, PermissionsMixin
+from django.conf import settings
+
+
+def blog_image_file_path(instance, filename):
+    """Generate file path for new blog image"""
+    ext = filename.split('.')[-1]
+    filename = f'{uuid.uuid4()}.{ext}'
+
+    return os.path.join('uploads/blog/', filename)
 
 
 class UserManager(BaseUserManager):
@@ -36,3 +48,53 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
+
+
+class Tag(models.Model):
+    """Tag for each specific Post"""
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT
+    )
+    name = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Category(models.Model):
+    """Category for each specific Post"""
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT
+    )
+    name = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Post(models.Model):
+    """Post element for each Post"""
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT
+    )
+    tags = models.ManyToManyField(Tag, blank=True)
+    categories = models.ManyToManyField(Category, blank=True)
+    title = models.CharField(max_length=255, unique=True)
+    subtitle = models.CharField(max_length=255, blank=True)
+    slug = models.SlugField(max_length=255, unique=True)
+    body = models.TextField()
+    meta_description = models.CharField(max_length=150, blank=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+    publish_date = models.DateTimeField(blank=True, null=True)
+    published = models.BooleanField(default=False)
+    image = models.ImageField(null=True, upload_to=blog_image_file_path)
+
+    class Meta:
+        ordering = ["-publish_date"]
+
+    def __str__(self):
+        return self.title

@@ -1,5 +1,14 @@
+from unittest.mock import patch
+
 from django.test import TestCase
 from django.contrib.auth import get_user_model
+
+from core import models
+
+
+def sample_user(email='testuser@gmail.com', password='testpass123'):
+    """Create a sample user"""
+    return get_user_model().objects.create_user(email, password)
 
 
 class ModelTests(TestCase):
@@ -43,3 +52,40 @@ class ModelTests(TestCase):
 
         self.assertTrue(user.is_superuser)
         self.assertTrue(user.is_staff)
+
+    def test_create_new_tag(self):
+        """Tag to be used for a blog"""
+        tag = models.Tag.objects.create(
+            user=sample_user(),
+            name='news'
+        )
+
+        self.assertEqual(str(tag), tag.name)
+
+    def test_create_new_category(self):
+        """Category to be used for a blog"""
+        category = models.Category.objects.create(
+            user=sample_user(),
+            name='Programming'
+        )
+
+        self.assertEqual(str(category), category.name)
+
+    def test_create_new_post(self):
+        """Post to be used for a blog"""
+        post = models.Post.objects.create(
+            author=sample_user(),
+            title='Programming',
+        )
+
+        self.assertEqual(str(post), post.title)
+
+    @patch('uuid.uuid4')
+    def test_blog_file_with_uuid_name(self, mock_uuid):
+        """Test that image is saved in the correct location"""
+        uuid = 'test-uuid'
+        mock_uuid.return_value = uuid
+        file_path = models.blog_image_file_path(None, 'myimage.jpg')
+
+        exp_path = f'uploads/blog/{uuid}.jpg'
+        self.assertEqual(file_path, exp_path)

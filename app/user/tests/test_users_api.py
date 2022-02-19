@@ -8,7 +8,7 @@ from rest_framework import status
 
 CREATE_USER_URL = reverse('user:create')
 TOKEN_URL = reverse('user:token')
-ME_URL = reverse('user:me')
+ME_URL = reverse('user:profile')
 
 
 def create_user(**params):
@@ -132,7 +132,7 @@ class PrivateUserApiTests(TestCase):
         })
 
     def test_post_me_not_allowed(self):
-        """Test that POST is not allowed on the me url"""
+        """Test that POST is not allowed on the profile url"""
         res = self.client.post(ME_URL, {})
 
         self.assertEqual(res.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
