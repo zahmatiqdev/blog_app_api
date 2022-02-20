@@ -8,8 +8,9 @@ class TagSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tag
-        fields = '__all__'
+        fields = ('id', 'name')
         read_only_field = ('id',)
+        ordering = ('-name',)
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -17,7 +18,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = '__all__'
+        fields = ('id', 'name')
         read_only_field = ('id',)
 
 
