@@ -8,5 +8,5 @@ app_name = 'blog'
 
 urlpatterns = [
     path('tag/', views.TagAPIView.as_view(), name='tag-list'),
-
+    path('tag/<int:pk>/', views.TagDetailAPIView.as_view(), name='tag-detail'),
 ]

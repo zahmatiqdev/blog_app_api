@@ -12,6 +12,16 @@ class TagSerializer(serializers.ModelSerializer):
         read_only_field = ('id',)
         ordering = ('-name',)
 
+    def validate_name(self, attrs):
+        """Validate name field for duplicate case"""
+        name = attrs.lower()
+        qs = Tag.objects.filter(name__iexact=name)
+        if qs.exists():
+            raise serializers.ValidationError(
+                "Tag with this name already exists"
+            )
+        return name
+
 
 class CategorySerializer(serializers.ModelSerializer):
     """Serializer for Category object"""

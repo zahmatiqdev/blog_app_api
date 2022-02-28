@@ -1,12 +1,12 @@
-from rest_framework import generics, authentication, permissions
+from rest_framework import generics, mixins, authentication, permissions
 
 from core.models import Tag
 from .serializers import TagSerializer
 
 
-class TagAPIView(generics.ListAPIView):
+class TagAPIView(generics.CreateAPIView, generics.ListAPIView):
     authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, permissions.IsAdminUser)
     serializer_class = TagSerializer
 
     def get_queryset(self):
@@ -16,3 +16,24 @@ class TagAPIView(generics.ListAPIView):
         if query is not None:
             qs = qs.filter(content__icontains=query)
         return qs
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class TagDetailAPIView(mixins.DestroyModelMixin,
+                       mixins.UpdateModelMixin,
+                       generics.RetrieveAPIView):
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated, permissions.IsAdminUser)
+    serializer_class = TagSerializer
+    queryset = Tag.objects.all()
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)

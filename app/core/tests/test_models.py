@@ -53,6 +53,17 @@ class ModelTests(TestCase):
         self.assertTrue(user.is_superuser)
         self.assertTrue(user.is_staff)
 
+    def test_create_new_staffuser(self):
+        """Test creating a new staff user"""
+        email = 'teststaff@gmail.com'
+        password = 'testpass123'
+        user = get_user_model().objects.create_staffuser(
+            email=email,
+            password=password
+        )
+
+        self.assertTrue(user.is_staff)
+
     def test_create_new_tag(self):
         """Tag to be used for a blog"""
         tag = models.Tag.objects.create(
