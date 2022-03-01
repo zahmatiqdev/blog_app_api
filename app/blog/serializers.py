@@ -30,6 +30,17 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ('id', 'name')
         read_only_field = ('id',)
+        ordering = ('-name',)
+
+    def validate_name(self, attrs):
+        """Validate name field for duplicate case"""
+        name = attrs.lower()
+        qs = Category.objects.filter(name__iexact=name)
+        if qs.exists():
+            raise serializers.ValidationError(
+                "Category with this name already exists"
+            )
+        return name
 
 
 class PostSerializer(serializers.ModelSerializer):
