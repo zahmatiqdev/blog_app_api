@@ -98,6 +98,7 @@ class PostDetailAPIView(mixins.DestroyModelMixin,
     permission_classes = (permissions.IsAuthenticated, permissions.IsAdminUser)
     serializer_class = PostSerializer
     queryset = Post.objects.all()
+    lookup_field = 'slug'
 
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)

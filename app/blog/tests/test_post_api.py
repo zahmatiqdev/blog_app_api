@@ -22,9 +22,14 @@ def sample_post(user, **params):
     return Post.objects.create(user=user, **payload)
 
 
-def detail_url_post(tag_id):
-    """return post detail url"""
-    return reverse('blog:tag-detail', args=[tag_id])
+def detail_url_with_slug(post_slug):
+    """Return post detail URL with slug"""
+    return reverse('blog:post-detail-slug', args=[post_slug])
+
+
+def detail_url_with_date(post_date):
+    """return post detail URL with date"""
+    return reverse('blog:post-detail-date', args=[post_date])
 
 
 class PublicPostApiTests(TestCase):
@@ -79,3 +84,13 @@ class PrivatePostApiTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         self.assertTrue(exists)
+
+    def test_retrieve_post_with_slug(self):
+        """Test retrieving a post with slug data"""
+        post = Post.objects.create(user=self.user, title='feedback', slug='this-is-feedback')
+        url = detail_url_with_slug(post.slug)
+
+        res = self.client.get(url)
+
+        serializer = PostSerializer(post)
+        self.assertEqual(res.data, serializer.data)

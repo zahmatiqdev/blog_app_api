@@ -65,3 +65,7 @@ class PostSerializer(serializers.ModelSerializer):
             'id', 'date_created', 'date_modified',
             'published', 'publish_date',
         )
+        lookup_field = 'slug'
+        extra_kwargs = {
+            'url': {'lookup_field': 'slug'}
+        }
