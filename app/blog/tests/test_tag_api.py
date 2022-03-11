@@ -67,6 +67,7 @@ class PrivateTagApiTest(TestCase):
             user=self.user,
             name=payload['name']
         ).exists()
+
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         self.assertTrue(exists)
 

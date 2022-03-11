@@ -85,7 +85,7 @@ class ModelTests(TestCase):
     def test_create_new_post(self):
         """Post to be used for a blog"""
         post = models.Post.objects.create(
-            author=sample_user(),
+            user=sample_user(),
             title='Programming',
         )
 

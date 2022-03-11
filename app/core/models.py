@@ -84,7 +84,7 @@ class Category(models.Model):
 
 class Post(models.Model):
     """Post element for each Post"""
-    author = models.ForeignKey(
+    user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.PROTECT
     )
@@ -92,8 +92,8 @@ class Post(models.Model):
     categories = models.ManyToManyField(Category, blank=True)
     title = models.CharField(max_length=255, unique=True)
     subtitle = models.CharField(max_length=255, blank=True)
-    slug = models.SlugField(max_length=255, unique=True)
-    body = models.TextField()
+    slug = models.SlugField(max_length=255, unique=True, blank=True)
+    body = models.TextField(blank=True)
     meta_description = models.CharField(max_length=150, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
