@@ -14,6 +14,7 @@ urlpatterns = [
          views.CategoryDetailAPIView.as_view(),
          name='category-detail'),
     path('post/', views.PostAPIView.as_view(), name='post-list'),
-    path('post/<str:slug>/', views.PostDetailAPIView.as_view(), name='post-detail-slug'),
-    # path('post/<date:slug>/', views.PostDetailAPIView.as_view(), name='post-detail-date'),
+    path('post/<str:slug>/',
+         views.PostDetailAPIView.as_view(),
+         name='post-detail-slug'),
 ]

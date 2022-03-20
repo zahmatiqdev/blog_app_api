@@ -58,8 +58,16 @@ class PrivatePostApiTests(TestCase):
 
     def test_retrieve_posts(self):
         """Test retrieving posts"""
-        Post.objects.create(user=self.user, title='feedback', slug='this-is-feedback')
-        Post.objects.create(user=self.user, title='community', slug='this-is-community')
+        Post.objects.create(
+            user=self.user,
+            title='feedback',
+            slug='this-is-feedback'
+        )
+        Post.objects.create(
+            user=self.user,
+            title='community',
+            slug='this-is-community'
+        )
 
         res = self.client.get(POST_URL)
 
@@ -87,7 +95,11 @@ class PrivatePostApiTests(TestCase):
 
     def test_retrieve_post_with_slug(self):
         """Test retrieving a post with slug data"""
-        post = Post.objects.create(user=self.user, title='feedback', slug='this-is-feedback')
+        post = Post.objects.create(
+            user=self.user,
+            title='feedback',
+            slug='this-is-feedback'
+        )
         url = detail_url_with_slug(post.slug)
 
         res = self.client.get(url)
